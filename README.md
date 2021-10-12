@@ -74,6 +74,17 @@ These functions are fairly flexable, and simple things that should be possible l
 
 Defining opDollars as however you calculate length inables statements like `foo[i%$]`, or as a specail dollar object(with its own opoverloads) allows `foo[$-3]` going 3 nodes back from the end in a doubly linked list.
 
+```d
+struct linkedlist{
+	struct dollar{
+		auto opBinary(){}
+	}
+	dollar opDollar(){ return dollar();}
+	opIndex(int i){}
+	opIndex(dollar i){}
+}
+```
+
 The index can be anything, (but should be int ~~or size_t~~ for simple indexs) including key types for custom aa arrays.
 
 ```d
@@ -81,6 +92,8 @@ struct myaa(K,V){
 	V opIndex(K a){}
 }
 ```
+
+See the offical spec for exterme multidementional slicing.
 
 ## foo[]=bar
 
