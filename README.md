@@ -59,7 +59,28 @@ int opCmp(typeof(this) bar){
 
 ## foo[]
 
-// todo cover 1 d indexing treating opslice as a first class citizen
+```d
+struct foo{
+	auto opIndex(){}            //foo[]
+	auto opIndex(int i){}       //foo[1]
+	auto opSlice(int i, int j){}//foo[1..10]
+	auto opIndex(int i, int j){}//foo[1,2]
+	auto opIndex(string s){}    //foo["bar"]
+	auto opDollar(){return length;}
+}
+```
+
+These functions are fairly flexable, and simple things that should be possible likely are once you figure out the vocab. opDollar can return a "dollar" object that you then use as an index.
+
+Defining opDollars as however you calculate length inables statements like `foo[i%$]`, or as a specail dollar object(with its own opoverloads) allows `foo[$-3]` going 3 nodes back from the end in a doubly linked list.
+
+The index can be anything, (but should be int ~~or size_t~~ for simple indexs) including key types for custom aa arrays.
+
+```d
+struct myaa(K,V){
+	V opIndex(K a){}
+}
+```
 
 ## foo[]=bar
 
@@ -78,13 +99,20 @@ struct myrange{
 	bool empty(){return start==end;}
 }
 ```
-You can optionally define, back, popBack, opIndex(see above), save, moveFront
+You can optionally define, back, popBack, opIndex(see "foo[]" above), save, moveFront.//todo check for others
+
+Afterwords you should in thoery be able to use std.algorithium
 
 //todo, explain the basics, but not the hierarchy or go to far down the rabbit hole
 
 ## foo.writeln
 
-toString
+```d
+string toString(){
+	return "foo";}
+```
+
+toString is techincally part of object.d, but you can overload it easily enough and this overload is always(/almost?) used when the std wants a string from an object, and probaly should be used when writting your own print code.
 
 ## bar[foo]
 
@@ -92,7 +120,19 @@ toHash
 
 ## bar = foo
 
-alias this
+```d
+struct nullable(T){
+	T payload;
+	bool isnull=true;
+	void opAssign(T foo){
+		payload=foo; isnull=false;}
+	alias payload this;
+}
+```
+
+"alias this", allows a type to implictly return anything else when ever it fails to compile the first way. And it nice for thin wrappers around most types.
+
+However, it can be unpredictable if you overuse it, many bugs come from the wrong opoverload being called because the compiler prefered a different path of alias this and templates then what you intented.
 
 ## foo.bar
 

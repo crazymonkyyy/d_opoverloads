@@ -8,3 +8,12 @@ unittest{
 	foo b;
 	int c=a+b;
 }
+struct bar{
+	string toString(){
+		return "foo";}
+}
+unittest{
+	import std;
+	bar b;
+	b.writeln;
+}
