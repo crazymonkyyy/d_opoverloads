@@ -29,6 +29,8 @@ auto opBinary(string op,T)(T bar){
 
 note opBinaryRight exists. Which is helpful for dealing with types you dont control but a headache that should be avoided if possible.
 
+See trianry for an example of implimenting several operators over several types.
+
 ## foo < bar
 
 The two comparision functions are opEquals and opCmp; opCmp should return an int thats -1,0, or 1. (no there isn't much flexablity there)
@@ -150,3 +152,7 @@ However, it can be unpredictable if you overuse it, many bugs come from the wron
 ## foo.bar
 
 opDispatch
+
+## to 
+
+//can I consider to to be an operator? how does it play with std.conv in other poeples code?
